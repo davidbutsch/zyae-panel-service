@@ -1,0 +1,24 @@
+{
+  "name": "zyae-resources-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon --require ts-node/register --watch src ./src/index.ts",
+    "prod": "cross-env NODE_ENV=production ts-node ./src/index.ts",
+    "start": "node ./dist/index.js",
+    "build": "tsc --build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
