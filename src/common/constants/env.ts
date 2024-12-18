@@ -11,7 +11,7 @@ const keys = [
   "LOG_PATH",
 ] as const; // const assert creates readonly "tuple" array
 type Key = (typeof keys)[number];
-export type EnvKeys = { [K in Key]: string };
+export type EnvKeys = Record<Key, string>;
 
 export class Env {
   keys: EnvKeys = {} as EnvKeys;
