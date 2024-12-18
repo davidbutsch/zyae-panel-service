@@ -1,4 +1,4 @@
-process.title = "zyae-resources-service";
+process.title = "zyae-panel-service";
 Error.stackTraceLimit = process.env.NODE_ENV === "production" ? -1 : 10;
 
 import { addAlias } from "module-alias";
