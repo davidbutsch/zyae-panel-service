@@ -33,7 +33,10 @@ export class ToHttpError implements ExpressErrorMiddlewareInterface {
       error = new BadRequestError(`Bad request ${targetType}`);
     }
     // handle unknown error
-    else error = new InternalServerError("Unexpected error occured");
+    else
+      error = new InternalServerError(
+        error.message || "Unexpected error occured"
+      );
 
     next(error);
   }
