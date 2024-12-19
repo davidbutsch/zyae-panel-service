@@ -6,6 +6,8 @@ import {
 import { DependencyContainer, container } from "tsyringe";
 import { IPerformanceService, PerformanceService } from "@/modules/performance";
 
+import { CpuService } from "@/modules/cpu";
+
 class TsyringeAdapter implements IocAdapter {
   constructor(private readonly TsyringeContainer: DependencyContainer) {}
 
@@ -17,6 +19,10 @@ class TsyringeAdapter implements IocAdapter {
 
 container.register<IPerformanceService>("PerformanceService", {
   useClass: PerformanceService,
+});
+
+container.register("CpuService", {
+  useClass: CpuService,
 });
 
 useContainer(new TsyringeAdapter(container));

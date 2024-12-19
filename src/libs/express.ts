@@ -9,8 +9,8 @@ import { ForbiddenError, useExpressServer } from "routing-controllers";
 import { config, defaultValidationConfig } from "@/common";
 import express, { Express } from "express";
 
+import { CpuController } from "@/modules/cpu";
 import { Logger } from ".";
-import { PerformanceController } from "@/modules/performance";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import helmet from "helmet";
@@ -43,7 +43,7 @@ securityMiddleware(app);
 standardMiddleware(app);
 
 useExpressServer(app, {
-  controllers: [PerformanceController],
+  controllers: [CpuController],
   routePrefix: config.basePath,
   defaultErrorHandler: false,
   validation: defaultValidationConfig,
