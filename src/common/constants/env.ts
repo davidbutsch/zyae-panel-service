@@ -9,6 +9,7 @@ const keys = [
   "BASE_PATH",
   "CORS_WHITELIST",
   "LOG_PATH",
+  "DISK_PATH",
 ] as const; // const assert creates readonly "tuple" array
 type Key = (typeof keys)[number];
 export type EnvKeys = Record<Key, string>;

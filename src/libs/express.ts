@@ -10,6 +10,7 @@ import { config, defaultValidationConfig } from "@/common";
 import express, { Express } from "express";
 
 import { CpuController } from "@/modules/cpu";
+import { DiskController } from "@/modules/disk";
 import { Logger } from ".";
 import { MemoryController } from "@/modules/memory";
 import cookieParser from "cookie-parser";
@@ -44,7 +45,7 @@ securityMiddleware(app);
 standardMiddleware(app);
 
 useExpressServer(app, {
-  controllers: [CpuController, MemoryController],
+  controllers: [CpuController, MemoryController, DiskController],
   routePrefix: config.basePath,
   defaultErrorHandler: false,
   validation: defaultValidationConfig,
