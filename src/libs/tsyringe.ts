@@ -6,6 +6,7 @@ import {
 import { DependencyContainer, container } from "tsyringe";
 
 import { CpuService } from "@/modules/cpu";
+import { MemoryService } from "@/modules/memory";
 
 class TsyringeAdapter implements IocAdapter {
   constructor(private readonly TsyringeContainer: DependencyContainer) {}
@@ -18,6 +19,10 @@ class TsyringeAdapter implements IocAdapter {
 
 container.register("CpuService", {
   useClass: CpuService,
+});
+
+container.register("MemoryService", {
+  useClass: MemoryService,
 });
 
 useContainer(new TsyringeAdapter(container));

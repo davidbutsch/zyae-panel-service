@@ -11,6 +11,7 @@ import express, { Express } from "express";
 
 import { CpuController } from "@/modules/cpu";
 import { Logger } from ".";
+import { MemoryController } from "@/modules/memory";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import helmet from "helmet";
@@ -43,7 +44,7 @@ securityMiddleware(app);
 standardMiddleware(app);
 
 useExpressServer(app, {
-  controllers: [CpuController],
+  controllers: [CpuController, MemoryController],
   routePrefix: config.basePath,
   defaultErrorHandler: false,
   validation: defaultValidationConfig,
