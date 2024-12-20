@@ -1,28 +1,57 @@
-import { CpuInfo, ICpuService } from "@/modules/cpu";
+import { CpuInfo, CpuSpeed, CpuUsage, ICpuService } from "@/modules/cpu";
 
+import { CelsiusToFahrenheit } from "@/common";
+import { NotFoundError } from "routing-controllers";
 import { injectable } from "tsyringe";
-import os from "os";
-import osu from "os-utils";
+import si from "systeminformation";
 
 @injectable()
 export class CpuService implements ICpuService {
   async getInfo(): Promise<CpuInfo> {
-    const cpu0 = os.cpus()[0];
-    const info = {
-      model: cpu0.model.trim(),
-      speed: cpu0.speed,
-      count: osu.cpuCount(),
-      uptime: osu.sysUptime(),
+    const cpu = await si.cpu();
+    const { uptime } = si.time();
+
+    const info: CpuInfo = {
+      model: cpu.brand,
+      cores: cpu.cores,
+      physicalCores: cpu.physicalCores,
+      speed: cpu.speed,
+      uptime,
     };
 
     return info;
   }
 
-  async getUsage(): Promise<number> {
-    const usage = await new Promise<number>((resolve) =>
-      osu.cpuUsage((data) => resolve(data * 100))
-    );
+  async getUsage(): Promise<CpuUsage> {
+    const currentLoad = await si.currentLoad();
+
+    const usage: CpuUsage = {
+      average: currentLoad.avgLoad,
+      current: currentLoad.currentLoad,
+    };
 
     return usage;
+  }
+
+  async getSpeed(): Promise<CpuSpeed> {
+    const currentSpeed = await si.cpuCurrentSpeed();
+
+    const speed: CpuSpeed = {
+      average: currentSpeed.avg,
+      cores: currentSpeed.cores,
+    };
+
+    return speed;
+  }
+
+  async getTemperature(): Promise<number> {
+    const cpuTemperature = await si.cpuTemperature();
+
+    const temperature = cpuTemperature.main;
+
+    if (temperature == null)
+      throw new NotFoundError("Temperature metric not found on system");
+
+    return CelsiusToFahrenheit(temperature);
   }
 }
