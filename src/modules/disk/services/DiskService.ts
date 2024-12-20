@@ -1,34 +1,48 @@
-import { IDiskService } from "@/modules/disk";
-import cds from "check-disk-space";
-import { config } from "@/common";
+import { BYTES_IN_GIGABYTE, BYTES_IN_KILOBYTE } from "@/common";
+import { DiskTransferMetrics, DiskUsage, IDiskService } from "@/modules/disk";
+
+import { NotFoundError } from "routing-controllers";
 import { injectable } from "tsyringe";
+import si from "systeminformation";
 
 @injectable()
 export class DiskService implements IDiskService {
-  async getTotalGb(): Promise<number> {
-    const { size } = await cds(config.diskPath);
+  async getFsUsage(): Promise<DiskUsage[]> {
+    const fsSize = await si.fsSize();
 
-    const totalGb = size * 10 ** -9;
+    const fsUsage = fsSize.map((fs) => {
+      const usage: DiskUsage = {
+        mount: fs.mount,
+        size: fs.size / BYTES_IN_GIGABYTE, // convert to gigabytes
+        used: fs.used / BYTES_IN_GIGABYTE,
+        percentageUsed: fs.use,
+      };
 
-    return totalGb;
+      return usage;
+    });
+
+    return fsUsage;
   }
 
-  async getUsageGb(): Promise<number> {
-    const { free, size } = await cds(config.diskPath); // cds reports in bytes
+  async getTransferMetrics(): Promise<DiskTransferMetrics> {
+    const fsStats = await si.fsStats();
 
-    const usageBytes = size - free;
+    if (fsStats == null)
+      throw new NotFoundError("Transfer metrics not found on system");
 
-    const usageGb = usageBytes * 10 ** -9; // gb = byte * 10^-9
+    const transferMetrics: DiskTransferMetrics = {
+      rxKb: fsStats.rx, // read
+      wxKb: fsStats.wx, // write
+      txKb: fsStats.tx, // total
+      rxKbPerSec: fsStats.rx_sec || 0, // default 0 if null
+      wxKbPerSec: fsStats.wx_sec || 0, // ^ per second metrics are null on first request
+      txKbPerSec: fsStats.tx_sec || 0,
+    };
 
-    return usageGb;
-  }
+    Object.keys(transferMetrics).forEach((key) => {
+      transferMetrics[key as keyof DiskTransferMetrics] /= BYTES_IN_KILOBYTE; // convert each to kilobytes
+    });
 
-  async getUsagePercent(): Promise<number> {
-    const total = await this.getTotalGb();
-    const used = await this.getUsageGb();
-
-    const percent = (used / total) * 100;
-
-    return percent;
+    return transferMetrics;
   }
 }

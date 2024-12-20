@@ -8,18 +8,13 @@ import { IDiskService } from "@/modules/disk";
 export class DiskController {
   constructor(@inject("DiskService") private diskService: IDiskService) {}
 
-  @Get("/total")
-  async getDiskTotal() {
-    return { total: await this.diskService.getTotalGb() };
+  @Get("/usage")
+  async getFileSystemUsage() {
+    return { usage: await this.diskService.getFsUsage() };
   }
 
-  @Get("/usage")
-  async getDiskUsage() {
-    return {
-      usage: {
-        gb: await this.diskService.getUsageGb(),
-        percent: await this.diskService.getUsagePercent(),
-      },
-    };
+  @Get("/transferMetrics")
+  async getTransferMetrics() {
+    return { transferMetrics: await this.diskService.getTransferMetrics() };
   }
 }
