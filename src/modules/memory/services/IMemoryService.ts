@@ -1,5 +1,9 @@
+export type MemoryUsage = {
+  total: number;
+  used: number;
+  percentageUsed: number;
+};
+
 export interface IMemoryService {
-  getTotalGb(): number;
-  getUsageGb(): number;
-  getUsagePercent(): number;
+  getUsage(): Promise<MemoryUsage>;
 }
