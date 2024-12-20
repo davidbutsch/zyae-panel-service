@@ -13,6 +13,7 @@ import { CpuController } from "@/modules/cpu";
 import { DiskController } from "@/modules/disk";
 import { Logger } from ".";
 import { MemoryController } from "@/modules/memory";
+import { NetworkController } from "@/modules/network";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import helmet from "helmet";
@@ -45,7 +46,12 @@ securityMiddleware(app);
 standardMiddleware(app);
 
 useExpressServer(app, {
-  controllers: [CpuController, MemoryController, DiskController],
+  controllers: [
+    CpuController,
+    MemoryController,
+    DiskController,
+    NetworkController,
+  ],
   routePrefix: config.basePath,
   defaultErrorHandler: false,
   validation: defaultValidationConfig,
